@@ -11,7 +11,7 @@ export default defineConfig({
 			formats: ['es', 'cjs'],
 		},
 		rollupOptions: {
-			external: ['raxis-ecs', 'http', 'path', 'ws'],
+			external: ['raxis', 'http', 'path', 'ws'],
 		},
 	},
 });

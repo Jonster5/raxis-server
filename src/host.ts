@@ -2,7 +2,7 @@ import { WebSocketServer } from 'ws';
 import { parse } from 'path';
 import { Server, createServer } from 'http';
 import { ServerHandler } from './server';
-import { Resource, Component, ECS, Entity } from 'raxis-ecs';
+import { Resource, Component, ECS, Entity } from 'raxis';
 
 export class HostSettings extends Resource {
 	constructor(

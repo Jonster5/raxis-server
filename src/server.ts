@@ -1,4 +1,4 @@
-import { Component, ECS } from 'raxis-ecs';
+import { Component, ECS } from 'raxis';
 import { WebSocketServer, WebSocket } from 'ws';
 
 export type SocketData<T = any> = { type: string; body: T };
