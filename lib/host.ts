@@ -1,7 +1,7 @@
 import { WebSocketServer } from 'ws';
 import { parse } from 'path';
 import { Server, createServer } from 'http';
-import { ServerHandler } from './server';
+import { ServerHandler, SocketCloseEvent, SocketErrorEvent, SocketMessageEvent, SocketOpenEvent } from './server';
 import { Resource, Component, ECS, Entity } from 'raxis';
 
 export class HostSettings extends Resource {
@@ -41,8 +41,18 @@ function setupHost(ecs: ECS) {
 	ecs.spawn(host);
 }
 
-export function addPath(host: Entity, path: string, server: Entity) {
-	host.get(HTTPHost)!.paths.set(path, server.get(ServerHandler)!.server);
+export function createServerPath(ecs: ECS, host: Entity, path: string): ServerHandler {
+	const handler = new ServerHandler(
+		path,
+		ecs.getEventWriter(SocketOpenEvent),
+		ecs.getEventWriter(SocketMessageEvent),
+		ecs.getEventWriter(SocketCloseEvent),
+		ecs.getEventWriter(SocketErrorEvent)
+	);
+
+	host.get(HTTPHost)!.paths.set(path, handler.server);
+
+	return handler;
 }
 
 export function HostPlugin(ecs: ECS) {

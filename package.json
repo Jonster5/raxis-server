@@ -1,6 +1,6 @@
 {
 	"name": "raxis-server",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"type": "module",
 	"files": [
 		"dist"
@@ -20,9 +20,9 @@
 		"url": "https://github.com/Jonster5/raxis-server.git"
 	},
 	"scripts": {
-		"dev": "vite",
+		"dev": "ts-node src/main.ts",
 		"build": "tsc && vite build",
-		"publish": "npm run build & npm publish"
+		"publish": "npm run build && npm publish"
 	},
 	"devDependencies": {
 		"typescript": "^5.1.3",

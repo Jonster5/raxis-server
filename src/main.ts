@@ -1,2 +1,1 @@
-export * from './host';
-export * from './server';
+console.log('hello');
