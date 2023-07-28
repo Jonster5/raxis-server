@@ -1,8 +1,7 @@
-import { WebSocketServer } from 'ws';
 import { parse } from 'path';
 import { Server, createServer } from 'http';
 import { ServerHandler, SocketCloseEvent, SocketErrorEvent, SocketMessageEvent, SocketOpenEvent } from './server';
-import { Resource, Component, ECS, Entity } from 'raxis';
+import { Resource, ECS } from 'raxis';
 
 export class HostSettings extends Resource {
 	constructor(
@@ -14,8 +13,8 @@ export class HostSettings extends Resource {
 	}
 }
 
-export class HTTPHost extends Component {
-	constructor(public server: Server, public paths: Map<string, WebSocketServer> = new Map()) {
+export class HTTPHost extends Resource {
+	constructor(public server: Server, public paths: Map<string, ServerHandler> = new Map()) {
 		super();
 	}
 }
@@ -28,8 +27,8 @@ function setupHost(ecs: ECS) {
 		const { name } = parse(req.url!);
 
 		if (host.paths.has(name)) {
-			host.paths.get(name)!.handleUpgrade(req, soc, head, (ws) => {
-				host.paths.get(name)!.emit('connection', ws, req);
+			host.paths.get(name)!.server.handleUpgrade(req, soc, head, (ws) => {
+				host.paths.get(name)!.server.emit('connection', ws, req);
 			});
 		} else {
 			soc.destroy();
@@ -38,10 +37,10 @@ function setupHost(ecs: ECS) {
 
 	host.server.listen(hostSettings.options.port ?? 8080);
 
-	ecs.spawn(host);
+	ecs.insertResource(host);
 }
 
-export function createServerPath(ecs: ECS, host: Entity, path: string): ServerHandler {
+export function createServerPath(ecs: ECS, path: string): ServerHandler {
 	const handler = new ServerHandler(
 		path,
 		ecs.getEventWriter(SocketOpenEvent),
@@ -50,11 +49,15 @@ export function createServerPath(ecs: ECS, host: Entity, path: string): ServerHa
 		ecs.getEventWriter(SocketErrorEvent)
 	);
 
-	host.get(HTTPHost)!.paths.set(path, handler.server);
+	ecs.getResource(HTTPHost)!.paths.set(path, handler);
 
 	return handler;
 }
 
+export function getServerPath(ecs: ECS, path: string): ServerHandler | null {
+	return ecs.getResource(HTTPHost)!.paths.get(path) ?? null;
+}
+
 export function HostPlugin(ecs: ECS) {
-	ecs.addComponentType(HTTPHost).addStartupSystem(setupHost);
+	ecs.addStartupSystem(setupHost);
 }
