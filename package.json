@@ -1,18 +1,18 @@
 {
 	"name": "raxis-server",
-	"version": "1.2.0",
+	"version": "1.2.3",
 	"type": "module",
 	"files": [
 		"dist"
 	],
-	"main": "./dist/raxis-server-main.cjs",
-	"module": "./dist/raxis-server-main.js",
-	"types": "./dist/raxis-server.d.ts",
+	"main": "./dist/main.cjs",
+	"module": "./dist/main.js",
+	"types": "./dist/main.d.ts",
 	"exports": {
 		".": {
-			"require": "./dist/raxis-server-main.cjs",
-			"module": "./dist/raxis-server-main.js",
-			"types": "./dist/raxis-server.d.ts"
+			"require": "./dist/main.cjs",
+			"module": "./dist/main.js",
+			"types": "./dist/main.d.ts"
 		}
 	},
 	"repository": {
@@ -20,18 +20,20 @@
 		"url": "https://github.com/Jonster5/raxis-server.git"
 	},
 	"scripts": {
-		"dev": "ts-node src/main.ts",
-		"build": "tsc && vite build",
-		"publish": "npm run build && npm publish"
-	},
-	"devDependencies": {
-		"typescript": "^5.1.3",
-		"vite": "^4.3.9",
-		"vite-plugin-dts": "^3.0.2"
+		"dev": "node dev.js",
+		"build": "tsc & node build.js",
+		"prepublish": "npm run build",
+		"publish": "npm publish"
 	},
 	"dependencies": {
-		"@types/ws": "^8.5.5",
 		"raxis": "^1.3.15",
 		"ws": "^8.13.0"
+	},
+	"devDependencies": {
+		"@types/node": "^20.4.5",
+		"@types/ws": "^8.5.5",
+		"esbuild": "0.18.17",
+		"execa": "^7.2.0",
+		"typescript": "^5.1.6"
 	}
 }

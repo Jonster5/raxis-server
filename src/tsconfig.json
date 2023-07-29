@@ -10,19 +10,16 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "declaration": true,
-    "declarationDir": "dist",
-    "emitDeclarationOnly": true,
+    "noEmit": true,
 
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "stripInternal": true,
+    "strict": false,
+    
 
-   
+    "baseUrl": "./",
+    "paths": {
+      "raxis-server": ["../lib/main"]
+    }
   },
-  "include": ["lib"],
-  "exclude": ["node_modules"]
+  "include": ["./"]
 }

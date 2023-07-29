@@ -89,12 +89,12 @@ export class ServerHandler {
 export function sendData(socket: WebSocket, type: string, data: ArrayBuffer) {
 	if (socket.readyState !== 1) return;
 
-	const length = new Uint8Array([type.length]).buffer;
-	const text = new Uint16Array(type.split('').map((s) => s.codePointAt(0)!)).buffer;
+	const length = new Uint8Array([type.length]);
+	const text = new TextEncoder().encode(type);
 	const message = new Uint8Array(length.byteLength + text.byteLength + data.byteLength);
 
-	message.set(new Uint8Array(length), 0);
-	message.set(new Uint8Array(text), length.byteLength);
+	message.set(length, 0);
+	message.set(text, length.byteLength);
 	message.set(new Uint8Array(data), length.byteLength + text.byteLength);
 
 	socket.send(message.buffer);

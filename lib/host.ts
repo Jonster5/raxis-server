@@ -7,6 +7,7 @@ export class HostSettings extends Resource {
 	constructor(
 		public options: {
 			port?: number;
+			cb?: (port: number) => void;
 		}
 	) {
 		super();
@@ -21,7 +22,7 @@ export class HTTPHost extends Resource {
 
 function setupHost(ecs: ECS) {
 	const host = new HTTPHost(createServer());
-	const hostSettings = ecs.getResource(HostSettings)!;
+	const { port, cb } = ecs.getResource(HostSettings)!.options;
 
 	host.server.on('upgrade', (req, soc, head) => {
 		const { name } = parse(req.url!);
@@ -35,7 +36,7 @@ function setupHost(ecs: ECS) {
 		}
 	});
 
-	host.server.listen(hostSettings.options.port ?? 8080);
+	host.server.listen(port ?? 8080, () => (cb ? cb(port ?? 8080) : undefined));
 
 	ecs.insertResource(host);
 }
