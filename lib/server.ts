@@ -62,11 +62,11 @@ export class ServerHandler {
 
 		this.server.on('connection', (ws) => {
 			this.soe.send(new SocketOpenEvent(this, ws));
-			WebSocket;
+
 			ws.on('message', (data: ArrayBuffer) => {
 				const length = new Uint8Array(data)[0];
-				const type = String.fromCodePoint(...new Uint16Array(data.slice(1, 1 + length * 2)));
-				const body = data.slice(1 + length * 2);
+				const type = new TextDecoder().decode(data.slice(1, 1 + length));
+				const body = data.slice(1 + length);
 
 				this.sme.send(new SocketMessageEvent(this, type, body, ws));
 			});
