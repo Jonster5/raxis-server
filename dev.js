@@ -7,6 +7,7 @@ const ctx = await esbuild.context({
 	entryPoints: ['src/main.ts'],
 	outdir: '.dev',
 	bundle: true,
+	sourcemap: 'inline',
 	platform: 'node',
 	format: 'esm',
 	packages: 'external',

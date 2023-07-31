@@ -7,6 +7,7 @@ async function buildFor(format) {
 		bundle: true,
 		packages: 'external',
 		minify: true,
+		keepNames: true,
 		platform: 'node',
 		target: ['node18.0'],
 		format,

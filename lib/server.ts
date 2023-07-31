@@ -14,17 +14,12 @@ export class SocketOpenEvent extends ECSEvent {
 }
 
 export class SocketMessageEvent extends ECSEvent {
-	constructor(
-		public handler: ServerHandler,
-		public type: string,
-		public body: ArrayBufferLike,
-		public socket: WebSocket
-	) {
+	constructor(public handler: ServerHandler, public type: string, public body: Buffer, public socket: WebSocket) {
 		super();
 	}
 
 	clone() {
-		return new SocketMessageEvent(this.handler, this.type, structuredClone(this.body), this.socket);
+		return new SocketMessageEvent(this.handler, this.type, this.body.subarray(), this.socket);
 	}
 }
 
@@ -58,15 +53,15 @@ export class ServerHandler {
 		private sce: EventWriter<SocketCloseEvent>,
 		private see: EventWriter<SocketErrorEvent>
 	) {
-		this.server = new WebSocketServer({ noServer: true });
+		this.server = new WebSocketServer({ noServer: true, skipUTF8Validation: true });
 
 		this.server.on('connection', (ws) => {
 			this.soe.send(new SocketOpenEvent(this, ws));
 
-			ws.on('message', (data: ArrayBuffer) => {
-				const length = new Uint8Array(data)[0];
-				const type = new TextDecoder().decode(data.slice(1, 1 + length));
-				const body = data.slice(1 + length);
+			ws.on('message', (data: Buffer) => {
+				const length = data.readUint8(0);
+				const type = data.toString('utf8', 1, 1 + length);
+				const body = data.subarray(1 + length);
 
 				this.sme.send(new SocketMessageEvent(this, type, body, ws));
 			});
@@ -86,16 +81,17 @@ export class ServerHandler {
 	}
 }
 
-export function sendData(socket: WebSocket, type: string, data: ArrayBuffer) {
+export function sendData(socket: WebSocket, type: string, data: Buffer) {
 	if (socket.readyState !== 1) return;
+	if (type.length > 255) throw new Error('length of type cannot be more than 255 characters');
 
-	const length = new Uint8Array([type.length]);
-	const text = new TextEncoder().encode(type);
-	const message = new Uint8Array(length.byteLength + text.byteLength + data.byteLength);
+	const length = Buffer.from(new Uint8Array([type.length]).buffer);
+	const text = Buffer.from(type, 'utf-8');
+	const message = Buffer.alloc(length.byteLength + text.byteLength + data.byteLength);
 
 	message.set(length, 0);
 	message.set(text, length.byteLength);
-	message.set(new Uint8Array(data), length.byteLength + text.byteLength);
+	message.set(data, length.byteLength + text.byteLength);
 
 	socket.send(message.buffer);
 }
