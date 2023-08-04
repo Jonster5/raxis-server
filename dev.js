@@ -7,7 +7,7 @@ const ctx = await esbuild.context({
 	entryPoints: ['src/main.ts'],
 	outdir: '.dev',
 	bundle: true,
-	sourcemap: 'inline',
+	sourcemap: 'both',
 	platform: 'node',
 	format: 'esm',
 	packages: 'external',
@@ -17,6 +17,5 @@ const ctx = await esbuild.context({
 });
 
 await ctx.watch();
-console.log('\x1b[92m Watching... \x1b[0m');
 
-await $({ stdio: 'inherit' })`node --no-warnings --watch .dev/main.js`;
+await $({ stdio: 'inherit' })`node --enable-source-maps --no-warnings --watch .dev/main.js`;
