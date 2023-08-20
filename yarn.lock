@@ -230,10 +230,10 @@ path-key@^4.0.0:
   resolved "https://registry.yarnpkg.com/path-key/-/path-key-4.0.0.tgz#295588dc3aee64154f877adb9d780b81c554bf18"
   integrity sha512-haREypq7xkM7ErfgIyA0z+Bj4AGKlMSdlQE2jvJo6huWD1EdkKYV+G/T4nq0YEF2vgTT8kqMFKo1uHn950r4SQ==
 
-raxis@1.4.8:
-  version "1.4.8"
-  resolved "https://registry.yarnpkg.com/raxis/-/raxis-1.4.8.tgz#8341a3d5ed8e5888586c8fbc570612b51af97213"
-  integrity sha512-EygdDPVexX4EOxPF/YUXlAF3VShbWkUOm0JWuPSf6NdoXC4sQUEun/NapgqYLGb5GTUXrpCNvMMy9WyBuEF91A==
+raxis@^1.4.11:
+  version "1.4.11"
+  resolved "https://registry.yarnpkg.com/raxis/-/raxis-1.4.11.tgz#e015cb5b765e3079ce9887dd2cb22e33cd2dd4dd"
+  integrity sha512-Lsi3pIiRnv9IPi+hKHQZek/9kYoTPMPBYkN+0YMFIxKkSzc9j97cKtaFF/PY6UE6ZgXZvLsHE8vktH1o9sYI4w==
 
 shebang-command@^2.0.0:
   version "2.0.0"
